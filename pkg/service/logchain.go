@@ -1,10 +1,11 @@
-package logchain
+package service
 
 import (
 	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/debarshibasak/logchain/internal"
+	"github.com/debarshibasak/logchain/pkg/logchain"
 	"gorm.io/driver/clickhouse"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -13,7 +14,7 @@ import (
 )
 
 type LogChainServiceImpl struct {
-	UnimplementedLogChainServer
+	logchain.UnimplementedLogChainServer
 	*gorm.DB
 }
 
@@ -49,7 +50,7 @@ func New(config internal.Configuration) *LogChainServiceImpl {
 	return &LogChainServiceImpl{DB: db}
 }
 
-func (l *LogChainServiceImpl) Log(ctx context.Context, req *LogRequest) (*LogResponse, error) {
+func (l *LogChainServiceImpl) Log(ctx context.Context, req *logchain.LogRequest) (*logchain.LogResponse, error) {
 
 	var logline internal.LogStore
 
@@ -67,5 +68,5 @@ func (l *LogChainServiceImpl) Log(ctx context.Context, req *LogRequest) (*LogRes
 		log.Println(err)
 	}
 
-	return &LogResponse{Status: true}, nil
+	return &logchain.LogResponse{Status: true}, nil
 }

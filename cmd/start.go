@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"github.com/debarshibasak/logchain/internal"
 	"github.com/debarshibasak/logchain/pkg/logchain"
+	"github.com/debarshibasak/logchain/pkg/service"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
@@ -60,7 +61,7 @@ var startCmd = &cobra.Command{
 			s = grpc.NewServer()
 		}
 
-		logchain.RegisterLogChainServer(s, logchain.New(config))
+		logchain.RegisterLogChainServer(s, service.New(config))
 		log.Printf("server listening at %v", lis.Addr())
 		if err := s.Serve(lis); err != nil {
 			log.Fatalf("failed to serve: %v", err)
