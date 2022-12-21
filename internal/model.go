@@ -8,6 +8,6 @@ type LogStore struct {
 	AppName   string
 	LogLevel  string
 	Timestamp time.Time
-	LogLine   []byte
+	Message   []byte
 	Labels    []byte
 }

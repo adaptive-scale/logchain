@@ -55,13 +55,11 @@ func (l *LogChainServiceImpl) Log(ctx context.Context, req *LogRequest) (*LogRes
 
 	fmt.Println(req.Timestamp)
 
-	logline.LogLine = req.LogLine
+	logline.Message = req.LogLine
 	logline.LogLevel = req.LogLevel
 	logline.Timestamp = time.UnixMicro(req.Timestamp)
 	logline.AppName = req.AppName
-
 	d, _ := json.Marshal(req.Labels)
-
 	logline.Labels = d
 
 	err := l.WithContext(ctx).Create(&logline)
