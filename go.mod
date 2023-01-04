@@ -1,4 +1,4 @@
-module github.com/debarshibasak/logchain
+module github.com/adaptive-scale/logchain
 
 go 1.19
 

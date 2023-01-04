@@ -11,3 +11,11 @@ type LogStore struct {
 	Message   []byte
 	Labels    []byte
 }
+
+type MetricStore struct {
+	MetricGroup string
+	MetricName  string
+	Value       float64
+	Timestamp   time.Time
+	Labels      []byte
+}

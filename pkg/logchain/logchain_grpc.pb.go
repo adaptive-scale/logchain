@@ -23,7 +23,8 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type LogChainClient interface {
 	// Sends a greeting
-	Log(ctx context.Context, in *LogRequest, opts ...grpc.CallOption) (*LogResponse, error)
+	Log(ctx context.Context, in *LogRequest, opts ...grpc.CallOption) (*Response, error)
+	Metric(ctx context.Context, in *MetricRequest, opts ...grpc.CallOption) (*Response, error)
 }
 
 type logChainClient struct {
@@ -34,9 +35,18 @@ func NewLogChainClient(cc grpc.ClientConnInterface) LogChainClient {
 	return &logChainClient{cc}
 }
 
-func (c *logChainClient) Log(ctx context.Context, in *LogRequest, opts ...grpc.CallOption) (*LogResponse, error) {
-	out := new(LogResponse)
+func (c *logChainClient) Log(ctx context.Context, in *LogRequest, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
 	err := c.cc.Invoke(ctx, "/LogChain/Log", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *logChainClient) Metric(ctx context.Context, in *MetricRequest, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/LogChain/Metric", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +58,8 @@ func (c *logChainClient) Log(ctx context.Context, in *LogRequest, opts ...grpc.C
 // for forward compatibility
 type LogChainServer interface {
 	// Sends a greeting
-	Log(context.Context, *LogRequest) (*LogResponse, error)
+	Log(context.Context, *LogRequest) (*Response, error)
+	Metric(context.Context, *MetricRequest) (*Response, error)
 	mustEmbedUnimplementedLogChainServer()
 }
 
@@ -56,8 +67,11 @@ type LogChainServer interface {
 type UnimplementedLogChainServer struct {
 }
 
-func (UnimplementedLogChainServer) Log(context.Context, *LogRequest) (*LogResponse, error) {
+func (UnimplementedLogChainServer) Log(context.Context, *LogRequest) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Log not implemented")
+}
+func (UnimplementedLogChainServer) Metric(context.Context, *MetricRequest) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Metric not implemented")
 }
 func (UnimplementedLogChainServer) mustEmbedUnimplementedLogChainServer() {}
 
@@ -90,6 +104,24 @@ func _LogChain_Log_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LogChain_Metric_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MetricRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LogChainServer).Metric(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/LogChain/Metric",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LogChainServer).Metric(ctx, req.(*MetricRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // LogChain_ServiceDesc is the grpc.ServiceDesc for LogChain service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -100,6 +132,10 @@ var LogChain_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Log",
 			Handler:    _LogChain_Log_Handler,
+		},
+		{
+			MethodName: "Metric",
+			Handler:    _LogChain_Metric_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

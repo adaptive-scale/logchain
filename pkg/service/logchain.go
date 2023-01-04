@@ -3,9 +3,8 @@ package service
 import (
 	"context"
 	"encoding/json"
-	"fmt"
-	"github.com/debarshibasak/logchain/internal"
-	"github.com/debarshibasak/logchain/pkg/logchain"
+	"github.com/adaptive-scale/logchain/internal"
+	"github.com/adaptive-scale/logchain/pkg/logchain"
 	"gorm.io/driver/clickhouse"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -29,7 +28,7 @@ func New(config internal.Configuration) *LogChainServiceImpl {
 			if err != nil {
 				log.Fatal("failed to connect database")
 			}
-			err := db.AutoMigrate(&internal.LogStore{})
+			err := db.AutoMigrate(&internal.LogStore{}, &internal.MetricStore{})
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -50,11 +49,9 @@ func New(config internal.Configuration) *LogChainServiceImpl {
 	return &LogChainServiceImpl{DB: db}
 }
 
-func (l *LogChainServiceImpl) Log(ctx context.Context, req *logchain.LogRequest) (*logchain.LogResponse, error) {
+func (l *LogChainServiceImpl) Log(ctx context.Context, req *logchain.LogRequest) (*logchain.Response, error) {
 
 	var logline internal.LogStore
-
-	fmt.Println(req.Timestamp)
 
 	logline.Message = req.LogLine
 	logline.LogLevel = req.LogLevel
@@ -68,5 +65,30 @@ func (l *LogChainServiceImpl) Log(ctx context.Context, req *logchain.LogRequest)
 		log.Println(err)
 	}
 
-	return &logchain.LogResponse{Status: true}, nil
+	return &logchain.Response{Success: true}, nil
+}
+
+func (l *LogChainServiceImpl) Metric(ctx context.Context, req *logchain.MetricRequest) (*logchain.Response, error) {
+
+	var metric internal.MetricStore
+
+	metric.MetricGroup = req.MetricGroup
+	metric.MetricName = req.MetricName
+
+	if req.Timestamp == 0 {
+		metric.Timestamp = time.Now()
+	} else {
+		metric.Timestamp = time.UnixMicro(req.Timestamp)
+	}
+
+	metric.Value = req.MetricValue
+	d, _ := json.Marshal(req.Labels)
+	metric.Labels = d
+
+	err := l.WithContext(ctx).Create(&metric)
+	if err != nil {
+		log.Println(err)
+	}
+
+	return &logchain.Response{Success: true}, nil
 }

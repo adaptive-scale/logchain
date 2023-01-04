@@ -6,9 +6,9 @@ package cmd
 import (
 	"crypto/tls"
 	"fmt"
-	"github.com/debarshibasak/logchain/internal"
-	"github.com/debarshibasak/logchain/pkg/logchain"
-	"github.com/debarshibasak/logchain/pkg/service"
+	"github.com/adaptive-scale/logchain/internal"
+	"github.com/adaptive-scale/logchain/pkg/logchain"
+	"github.com/adaptive-scale/logchain/pkg/service"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"

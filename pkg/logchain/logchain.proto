@@ -5,16 +5,30 @@ option go_package = "./pkg/logchain";
 // The service definition.
 service LogChain {
   // Sends a greeting
-  rpc Log (LogRequest) returns (LogResponse) {}
+  rpc Log (LogRequest) returns (Response) {}
+  rpc Metric (MetricRequest) returns (Response) {}
 }
 
 // The request message containing the user's name.
 message LogRequest {
   string app_name = 1;
   bytes log_line = 2;
-  repeated string labels = 3;
+  repeated Labels labels = 3;
   string log_level = 4;
   int64 timestamp = 5;
+}
+
+message Labels {
+  string name = 1;
+  bytes value = 2;
+}
+
+message MetricRequest {
+  string metric_group = 1;
+  string metric_name = 2;
+  double metric_value = 3;
+  int64 timestamp = 5;
+  repeated Labels labels = 6;
 }
 
 enum Loglevel {
@@ -31,6 +45,7 @@ enum Loglevel {
 }
 
 // The response message containing the greetings
-message LogResponse {
-  bool status = 1;
+message Response {
+  bool success = 1;
+  optional string error = 2;
 }

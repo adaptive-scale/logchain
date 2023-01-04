@@ -2,12 +2,10 @@ package logchainhook
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
-	"fmt"
-	"github.com/debarshibasak/logchain/pkg/logchain"
+	"github.com/adaptive-scale/logchain/pkg/logchain"
 	log "github.com/sirupsen/logrus"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"time"
 )
 
@@ -17,15 +15,7 @@ type LogChainHook struct {
 	appName           string
 }
 
-func NewLogChainHook(appName, serverLocation string, allowedLevels ...log.Level) *LogChainHook {
-
-	conn, err := grpc.Dial(serverLocation, grpc.WithTransportCredentials(insecure.NewCredentials()))
-	if err != nil {
-		log.Fatalf("did not connect: %v", err)
-	}
-
-	c := logchain.NewLogChainClient(conn)
-
+func NewLogChainHook(appName string, c logchain.LogChainClient, allowedLevels ...log.Level) *LogChainHook {
 	return &LogChainHook{
 		logChainClient:    c,
 		acceptedLogLevels: allowedLevels,
@@ -38,9 +28,12 @@ func (hook *LogChainHook) Fire(entry *log.Entry) error {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	var labels []string
+	var labels []*logchain.Labels
 	for key, values := range entry.Data {
-		labels = append(labels, fmt.Sprintf("%v:%v", key, values))
+		d, _ := json.Marshal(values)
+		labels = append(labels, &logchain.Labels{
+			Name: key, Value: d,
+		})
 	}
 	resp, err := hook.logChainClient.Log(ctx, &logchain.LogRequest{
 		AppName:   hook.appName,
@@ -49,7 +42,7 @@ func (hook *LogChainHook) Fire(entry *log.Entry) error {
 		LogLevel:  entry.Level.String(),
 		Timestamp: entry.Time.UnixMicro(),
 	})
-	if !resp.Status {
+	if !resp.Success {
 		return errors.New("response was invalid from the logchain server")
 	}
 	return err
