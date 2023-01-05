@@ -20,7 +20,7 @@ message LogRequest {
 
 message Labels {
   string name = 1;
-  bytes value = 2;
+  string value = 2;
 }
 
 message MetricRequest {
