@@ -8,6 +8,8 @@ services:
       - CLICKHOUSE_USER=logchain
       - CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT=1
       - CLICKHOUSE_PASSWORD=L0gCh@in
+    volumes:
+      - ./clickhouse-data:/var/lib/clickhouse/
     logging:
       options:
         max-size: 10m
@@ -17,8 +19,8 @@ services:
       - '18123:18123'
     ulimits:
       nofile:
-        soft: "262144"
-        hard: "262144"
+        soft: 262144
+        hard: 262144
 
 #  grafana:
 #    image: grafana/grafana:9.3.2
