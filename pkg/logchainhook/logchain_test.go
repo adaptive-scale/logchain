@@ -19,7 +19,6 @@ func TestLogEvents(t *testing.T) {
 	}
 
 	c := logchain.NewLogChainClient(conn)
-
 	hook := logchainhook.NewLogChainHook("testapp", c, logrus.ErrorLevel)
 	logrus.AddHook(hook)
 	logrus.WithField("test", "Test").Error("test123")

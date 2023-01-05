@@ -32,7 +32,7 @@ func (hook *LogChainHook) Fire(entry *log.Entry) error {
 	for key, values := range entry.Data {
 		d, _ := json.Marshal(values)
 		labels = append(labels, &logchain.Labels{
-			Name: key, Value: d,
+			Name: key, Value: string(d),
 		})
 	}
 	resp, err := hook.logChainClient.Log(ctx, &logchain.LogRequest{
