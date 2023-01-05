@@ -16,7 +16,7 @@ services:
         max-file: "3"
     ports:
       - '9000:9000'
-      - '18123:18123'
+      - '8123:8123'
     ulimits:
       nofile:
         soft: 262144
