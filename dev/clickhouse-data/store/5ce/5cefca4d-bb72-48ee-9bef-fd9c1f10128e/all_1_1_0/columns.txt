@@ -1,0 +1,7 @@
+columns format version: 1
+5 columns:
+`metric_group` String
+`metric_name` String
+`value` Float64
+`timestamp` DateTime64(3)
+`labels` String
