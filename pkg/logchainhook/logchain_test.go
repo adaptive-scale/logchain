@@ -38,7 +38,7 @@ func TestEventMetrics(t *testing.T) {
 		MetricValue: 20,
 		Labels: []*logchain.Labels{{
 			Name:  "workspace_url",
-			Value: []byte("data"),
+			Value: "data",
 		}},
 	})
 	if !resp.Success {
