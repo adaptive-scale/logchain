@@ -41,5 +41,12 @@ services:
     restart: unless-stopped
     networks:
       - backend
+    environment:
+      - DATABASE_TYPE=clickhouse 
+      - DSN=clickhouse://logchain:L0gCh@in@clickhouse:9000/logchain?read_timeout=10s
+      - PORT=9090
+      - PROTECTED="false"
+      - CERT_LOCATION=""
+      - KEY_LOCATION=""
 networks:
   backend:

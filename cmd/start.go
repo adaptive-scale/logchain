@@ -6,6 +6,9 @@ package cmd
 import (
 	"crypto/tls"
 	"fmt"
+	"log"
+	"net"
+
 	"github.com/adaptive-scale/logchain/internal"
 	"github.com/adaptive-scale/logchain/pkg/logchain"
 	"github.com/adaptive-scale/logchain/pkg/service"
@@ -13,8 +16,6 @@ import (
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
-	"log"
-	"net"
 )
 
 // startCmd represents the start command
@@ -29,18 +30,15 @@ var startCmd = &cobra.Command{
 	Long:  `//TODO`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		viper.SetConfigName("config.yaml")
-		viper.AddConfigPath(".")
-		viper.SetConfigType("yaml")
 		viper.AutomaticEnv()
 
-		if err := viper.ReadInConfig(); err != nil {
-			log.Fatalf("error while starting logchain: %v", err)
-		}
-
-		var config internal.Configuration
-		if err := viper.Unmarshal(&config); err != nil {
-			log.Fatalf("error while finding configuration: %v", err)
+		config := internal.Configuration{
+			DatabaseType: viper.GetString("DATABASE_TYPE"),
+			DSN:          viper.GetString("DSN"),
+			Port:         viper.GetInt("PORT"),
+			Protected:    viper.GetBool("PROTECTED"),
+			CertLocation: viper.GetString("CERT_LOCATION"),
+			KeyLocation:  viper.GetString("KEY_LOCATION"),
 		}
 
 		lis, err := net.Listen("tcp", fmt.Sprintf(":%d", config.Port))
