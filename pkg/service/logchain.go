@@ -57,7 +57,13 @@ func (l *LogChainServiceImpl) Log(ctx context.Context, req *logchain.LogRequest)
 	logline.LogLevel = req.LogLevel
 	logline.Timestamp = time.UnixMicro(req.Timestamp)
 	logline.AppName = req.AppName
-	d, _ := json.Marshal(req.Labels)
+
+	var val = map[string]string{}
+	for _, v := range req.Labels {
+		val[v.Name] = v.Value
+	}
+	d, _ := json.Marshal(val)
+
 	logline.Labels = d
 
 	err := l.WithContext(ctx).Create(&logline)
@@ -82,7 +88,12 @@ func (l *LogChainServiceImpl) Metric(ctx context.Context, req *logchain.MetricRe
 	}
 
 	metric.Value = req.MetricValue
-	d, _ := json.Marshal(req.Labels)
+
+	var val = map[string]string{}
+	for _, v := range req.Labels {
+		val[v.Name] = v.Value
+	}
+	d, _ := json.Marshal(val)
 	metric.Labels = d
 
 	err := l.WithContext(ctx).Create(&metric)
