@@ -9,6 +9,7 @@ Logchain is a GRPC adapter for clickhouse and postgres for sinking and persistin
 
 
 
+
 #### Setup Logchain
 
 
@@ -24,6 +25,8 @@ docker stack deploy logchain --compose-file ./dev/docker-compose.yaml
 ```
 
 This will start the logchain server on port 9090, clickhouse on port 8123 and grafana at port 3000.
+
+
 
 For golang client, import the logchain client as follows:
 
@@ -51,6 +54,7 @@ func main()  {
 }
 ```
 
+
 #### Setup Logging Dashboards in Grafana
 
 You can select the clickhouse as datasource and then use the following query to get the logs:
@@ -59,6 +63,9 @@ You can select the clickhouse as datasource and then use the following query to 
 SELECT app_name, date(timestamp) dt,  message, labels, count(message) cnt FROM logchain.log_stores  group by app_name, dt, message, labels order by dt desc, cnt desc LIMIT 100
 ```
 
+
 The output of the query looks as follows:
+
+
 
 <img width="1510" alt="Screenshot 2024-01-18 at 12 49 53" src="https://github.com/adaptive-scale/logchain/assets/23738278/9b201df9-6bd0-4f34-bd02-61f3e61abc6d">
