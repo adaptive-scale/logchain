@@ -1,6 +1,6 @@
 # Logchain
 
-Logchain is a grpc adapter for clickhouse for persisting logs.
+Logchain is a grpc adapter for clickhouse and postgres for persisting logs.
 
 ##### Use cases
 
