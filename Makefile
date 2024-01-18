@@ -8,5 +8,10 @@ build:
 docker:
 	docker build . -t registry.digitalocean.com/adaptive-at-scale/logchain:latest
 	docker push registry.digitalocean.com/adaptive-at-scale/logchain:latest
+
+docker-hub:
+	docker build . -t adaptivelive/logchain:latest
+	docker push adaptivelive/logchain:latest
+
 update:
 	go mod tidy

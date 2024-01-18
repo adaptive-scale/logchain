@@ -35,7 +35,7 @@ services:
       - backend
 
   logchain:
-    image: logchain:latest
+    image: adaptivelive/logchain:latest
     ports:
       - 9090:9090
     restart: unless-stopped

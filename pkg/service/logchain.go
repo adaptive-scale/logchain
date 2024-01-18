@@ -6,7 +6,6 @@ import (
 	"github.com/adaptive-scale/logchain/internal"
 	"github.com/adaptive-scale/logchain/pkg/logchain"
 	"gorm.io/driver/clickhouse"
-	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"log"
 	"time"
@@ -31,14 +30,6 @@ func New(config internal.Configuration) *LogChainServiceImpl {
 			err := db.AutoMigrate(&internal.LogStore{}, &internal.MetricStore{})
 			if err != nil {
 				log.Fatal(err)
-			}
-			break
-		}
-	case "postgres":
-		{
-			db, err = gorm.Open(postgres.Open(config.DSN), &gorm.Config{})
-			if err != nil {
-				log.Fatal("failed to connect database")
 			}
 			break
 		}

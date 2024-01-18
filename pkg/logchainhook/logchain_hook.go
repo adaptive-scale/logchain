@@ -42,6 +42,10 @@ func (hook *LogChainHook) Fire(entry *log.Entry) error {
 		LogLevel:  entry.Level.String(),
 		Timestamp: entry.Time.UnixMicro(),
 	})
+
+	if resp == nil {
+		return errors.New("response was empty")
+	}
 	if !resp.Success {
 		return errors.New("response was invalid from the logchain server")
 	}
