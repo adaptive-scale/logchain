@@ -1,6 +1,11 @@
 # Logchain
 
-Logchain is a grpc adapter for clickhouse for persisting logs and metrics.
+Logchain is a grpc adapter for clickhouse for persisting logs.
+
+##### Use cases
+
+- When applications are deployment on-premise or on customer side. Logchain provides visibility into Errors for support without additional infrastructure
+- For small/medium applications that do not need huge logging infrastructure but still need visibility.
 
 #### Start Clickhouse server
 ```
