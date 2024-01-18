@@ -53,3 +53,7 @@ You can select the clickhouse as datasource and then use the following query to 
 ```
 SELECT app_name, date(timestamp) dt,  message, labels, count(message) cnt FROM logchain.log_stores  group by app_name, dt, message, labels order by dt desc, cnt desc LIMIT 100
 ```
+
+The dashboard looks something like this - 
+
+<img width="1510" alt="Screenshot 2024-01-18 at 12 49 53" src="https://github.com/adaptive-scale/logchain/assets/23738278/9b201df9-6bd0-4f34-bd02-61f3e61abc6d">
