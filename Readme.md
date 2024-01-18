@@ -1,7 +1,13 @@
 # Logchain
 
-Logchain is a grpc logger adapter for clickhouse and postgres for persisting logs and metrics.
+Logchain is a grpc adapter for clickhouse and postgres for persisting logs.
 
+##### Use cases
+
+- When applications are deployment on-premise or on customer side. Logchain provides visibility into Errors for application support without additional infrastructure
+- For small/medium applications that do not need huge logging infrastructure but still need visibility.
+
+Install logchain using the following command:
 ```
 go install github.com/adaptive-scale/logchain@1.0.3
 ```
@@ -47,7 +53,3 @@ You can select the clickhouse as datasource and then use the following query to 
 ```
 SELECT app_name, date(timestamp) dt,  message, labels, count(message) cnt FROM logchain.log_stores  group by app_name, dt, message, labels order by dt desc, cnt desc LIMIT 100
 ```
-
-
-
-
